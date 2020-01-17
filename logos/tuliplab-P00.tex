@@ -1,0 +1,462 @@
+%
+% ---------------------------------------------------------------
+% Copyright (C) 2012-2018 Gang Li
+% ---------------------------------------------------------------
+%
+% This work is the default powerdot-tuliplab style test file and may be
+% distributed and/or modified under the conditions of the LaTeX Project Public
+% License, either version 1.3 of this license or (at your option) any later
+% version. The latest version of this license is in
+% http://www.latex-project.org/lppl.txt and version 1.3 or later is part of all
+% distributions of LaTeX version 2003/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% This Current Maintainer of this work is Gang Li.
+%
+%
+
+\documentclass[
+ size=12pt,
+ paper=smartboard, %a4paper, smartboard, screen
+ mode=present, %present, handout, print
+ display=slides, % slidesnotes, notes, slides
+% nohandoutpagebreaks,
+% pauseslide,
+style=tuliplab,
+% nopagebreaks,clock
+% hlentries=true,
+% hlsections = true,
+pauseslide,
+fleqn,leqno]{powerdot}
+
+\hypersetup{pdfpagemode=FullScreen}
+% \usepackage[toc,highlight,blackslide,slidesonly,sounds,HA]{HA-prosper}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{rotating}
+\usepackage{graphicx}
+\usepackage{boxedminipage}
+\usepackage{media9}
+\usepackage{rotate}
+\usepackage{calc}
+\usepackage[absolute]{textpos}
+\usepackage{psfrag,overpic}
+\usepackage{fouriernc}
+\usepackage{pstricks,pst-node,pst-text,pst-3d,pst-grad}
+\usepackage{moreverb,epsfig,color,subfigure}
+\usepackage{color}
+\usepackage{pstricks}
+\usepackage{pstricks-add}
+\usepackage{pst-text}
+\usepackage{pst-node, pst-tree}
+\usepackage{booktabs}
+\usepackage{etex}
+\usepackage{breqn}
+\usepackage{multirow}
+\usepackage{gitinfo2}
+
+\usepackage{etex}
+\usepackage{listings}
+\lstset{frameround=fttt,
+frame=trBL,
+stringstyle=\ttfamily,
+backgroundcolor=\color{yellow!20},
+basicstyle=\footnotesize\ttfamily}
+\lstnewenvironment{code}{
+\lstset{frame=single,escapeinside=`',
+backgroundcolor=\color{yellow!20},
+basicstyle=\footnotesize\ttfamily}
+}{}
+
+
+\usepackage{fouriernc}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{epstopdf}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{subfigure}
+\title{Predict Future Sales}
+\author{
+Xichen Tang
+\\
+QUT
+}
+\date{\today}
+
+
+% Customize the setting of slides
+\pdsetup{
+% theslide=\arabic{slide}~/~\pageref*{lastslide},
+% theslide=\arabic{slide},
+rf=\href{http://www.tulip.org.au}{
+Last Changed by: \textsc{\gitCommitterName}\ \gitVtagn-\gitAbbrevHash\ (\gitAuthorDate)
+},
+cf=\hyperlink{blankslide}{Powerdot Example},
+trans=Fade,
+list={labelsep=1em,leftmargin=*,itemsep=0pt,topsep=5pt,parsep=0pt},
+}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{slide}[toc=,bm=]{Directory}
+\tableofcontents[content=sections]
+	\begin{itemize}
+    \item Subject Introduce
+    \item Processing Data
+    \item Data visualization
+    \item Simple fitting prediction
+    \item End
+    \end{itemize}
+\end{slide}
+
+\section{Subject Introduce}
+
+\begin{slide}{Introduce}
+
+  \begin{itemize}
+    \item The kaggle subject
+    \end{itemize}
+     This challenge serves as final project for the "How to win a data science competition" Coursera course.\par
+
+     In this competition you will work with a challenging time-series dataset consisting of daily sales data, kindly provided by one of the largest Russian software firms - 1C Company.\par
+
+     We are asking you to predict total sales for every product and store in the next month. By solving this competition you will be able to apply and enhance your data science skills.
+\end{slide}
+
+\begin{slide}{Data}
+
+  \begin{itemize}
+    \item item_categories.csv
+    \end{itemize}
+
+\begin{tabular}{|c|c|}%一个c表示有一列，格式为居中显示(center)
+
+item_category_name&item_category_id\\%第一行第一列和第二列  中间用&连接
+ \hline
+PC&	0\\
+ \hline
+AK&	1
+\end{tabular}
+
+    \begin{itemize}
+    \item items.csv
+    \end{itemize}
+
+    \begin{tabular}{|c|c|c|}%一个c表示有一列，格式为居中显示(center)
+
+item_name&item_id&item_category_id\\%第一行第一列和第二列  中间用&连接
+ \hline
+BOB&0	&40 \\
+ \hline
+ABBYY&1&76  \\
+\end{tabular}
+
+    \begin{itemize}
+    \item sales_train_v2.csv
+    \end{itemize}
+
+   \begin{tabular}{|c|c|c|c|c|c|c|}%一个c表示有一列，格式为居中显示(center)
+
+index&date&date_block_num&shop_id&item_id&item_price&item_cnt_day\\%第一行第一列和第二列  中间用&连接
+ \hline
+0&	02.01.2013	&0  &59 &22154  &999.00	 &1.0\\
+ \hline
+1&	03.01.2013	&0  &25	&2552   &899.00	 &1.0\\
+\end{tabular}
+
+    \begin{itemize}
+    \item shops.csv
+    \end{itemize}
+
+    \begin{tabular}{|c|c|}%一个c表示有一列，格式为居中显示(center)
+
+shop_name&shop_id\\%第一行第一列和第二列  中间用&连接
+ \hline
+Bop&7\\
+ \hline
+Mockb&20\\
+\end{tabular}
+
+
+    \begin{itemize}
+    \item test.csv
+    \end{itemize}
+
+     \begin{tabular}{|c|c|c|}%一个c表示有一列，格式为居中显示(center)
+
+ID&shop_id&item_id\\%第一行第一列和第二列  中间用&连接
+ \hline
+0&5&5037  \\
+
+\end{tabular}
+
+\end{slide}
+
+\section{Processing Data}
+
+\begin{slide}{Read Data}
+\begin{itemize}
+\item Method:
+\end{itemize}
+pd.read_csv(“sales_train_v2.csv”)
+\begin{itemize}
+\item The result(part):
+\end{itemize}
+\begin{tabular}{|c|c|c|c|c|c|c|}%一个c表示有一列，格式为居中显示(center)
+
+index&date&date_block_num&shop_id&item_id&item_price&item_cnt_day\\%第一行第一列和第二列  中间用&连接
+ \hline
+0&	02.01.2013	&0  &59 &22154  &999.00	 &1.0\\
+ \hline
+1&	03.01.2013	&0  &25	&2552   &899.00	 &1.0\\
+ \hline
+2&	05.01.2013	&0	&25	&2552   &899.00	 &-1.0\\
+ \hline
+3&	06.01.2013	&0	&25	&2554   &1709.05 &1.0\\
+ \hline
+4&	15.01.2013  &0	&25 &2555   &1099.00 &1.0
+
+\end{tabular}
+\end{slide}
+
+\begin{slide}{Observe Data}
+The properties of the data
+
+\begin{itemize}
+\item method
+\end{itemize}
+
+sales_train.info()
+
+\begin{itemize}
+\item result
+\end{itemize}
+<class 'pandas.core.frame.DataFrame'>  \\
+RangeIndex: 2935849 entries, 0 to 2935848  \\
+Data columns (total 6 columns):  \\
+date              object  \\
+date_block_num    int64  \\
+shop_id           int64  \\
+item_id           int64  \\
+item_price        float64  \\
+item_cnt_day      float64  \\
+dtypes: float64(2), int64(3), object(1)  \\
+memory usage: 134.4+ MB
+
+\end{slide}
+
+\begin{slide}{Change attribute }
+
+\begin{itemize}[type=1]
+\item Method:
+\end{itemize}
+datetime.strptime()
+
+\begin{itemize}[type=1]
+\item Result(part):
+\end{itemize}
+
+ Data columns (total 6 columns): \par
+ date   \hspace{3em}           datetime64[ns] \par
+ date_block_num   \enspace  int64
+
+\end{slide}
+
+\begin{slide}{Simple Summary }
+\begin{enumerate}[type=1]%[label=\romani*)]
+\item Method:
+\end{enumerate}
+\center
+pivot_table
+\begin{enumerate}[type=1]%[label=\romani*)]
+\item Result:
+\end{enumerate}
+\includegraphics[width=4in]{first}
+\end{slide}
+
+
+\begin{slide}{Extract Data1}
+\begin{itemize}
+\item Method(example):
+\end{itemize}
+\center Sum_table.query()
+\begin{itemize}
+\item Result:
+\end{itemize}
+I can get data of every shop,for example: \par
+\includegraphics[width=4in]{02}
+\end{slide}
+
+\begin{slide}{Extract Data2}
+
+I also get a form about total sales:
+
+\begin{itemize}
+\item Method(example):
+\end{itemize}
+
+\center  sales_train.pivot_table()\par
+
+\begin{itemize}
+\item Result:
+\end{itemize}
+
+It shows the total sales of shop2. \par
+
+\includegraphics[width=2in]{03}
+
+\end{slide}
+
+
+\section{Data visualization}
+\begin{slide}{Shop_3 Relationship }
+\begin{enumerate}[type=1]%[label=\romani*)]
+\item Content:
+\end{enumerate}
+\center
+It shows the relationship between total sales of shop3 and time .
+\begin{enumerate}[type=1]%[label=\romani*)]
+\item Result:
+\end{enumerate}
+\includegraphics[width=4in]{04}
+\end{slide}
+
+
+\begin{slide}{shop_6 Relationship}
+\begin{itemize}
+\item Content:
+\end{itemize}
+\center The picture shows the sales volume  of a certain product in the shop6.
+\begin{itemize}
+\item Result:
+\end{itemize}
+\includegraphics[width=4in]{05}
+\end{slide}
+
+
+
+
+
+\begin{slide}{Relationship}
+\center
+\begin{itemize}
+\item Result:
+\end{itemize}
+\includegraphics[width=4in]{12}
+\end{slide}
+
+
+
+\begin{slide}{Total sales}
+
+\begin{itemize}
+\item Content:
+\end{itemize}
+
+\center  The picture shows the total sales per month in the shop5.\par
+
+\begin{itemize}
+\item Result:
+\end{itemize}
+
+It shows the total sales of shop2. \par
+
+\includegraphics[width=4in]{06}
+
+\end{slide}
+
+
+\begin{slide}{Proportion }
+\begin{enumerate}[type=1]%[label=\romani*)]
+\item Content:
+\end{enumerate}
+\center
+Proportion of monthly sales to total sales in the shop5.
+\begin{enumerate}[type=1]%[label=\romani*)]
+\item Result:
+\end{enumerate}
+\includegraphics[width=3in]{07}
+\end{slide}
+
+
+\begin{slide}{Monthly sales }
+\begin{enumerate}[type=1]%[label=\romani*)]
+\item Content:
+\end{enumerate}
+\center
+Monthly sales per store
+\begin{enumerate}[type=1]%[label=\romani*)]
+\item Result:
+\end{enumerate}
+
+
+\begin{figure}[htbp]
+\centering
+\subfigure[All]{
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{10.eps}
+
+\end{minipage}
+}%
+\subfigure[Part]{
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{11.eps}
+
+\end{minipage}
+}
+\centering
+\caption{ All and Part}
+\end{figure}
+
+
+\end{slide}
+
+
+\section{Simple fitting prediction}
+
+\begin{slide}{Simple fitting prediction}
+\begin{itemize}
+\item Content(example):
+\end{itemize}
+\center Sum_table.query()
+\begin{itemize}
+\item Result:
+\end{itemize}
+ sales volume of item No. 32 in the next few months in the shop7.\par
+\includegraphics[width=4in]{08}
+\end{slide}
+
+\begin{slide}{Simple  prediction}
+
+I also get a form about total sales:
+
+\begin{itemize}
+\item Method(example):
+\end{itemize}
+
+\center   Forecast total sales for the next few months in the shop6.\par
+
+\begin{itemize}
+\item Result:
+\end{itemize}
+
+It shows the total sales of shop2. \par
+
+\includegraphics[width=4in]{09}
+
+\end{slide}
+
+\section{End}
+
+
+\end{document}
+
+\endinput

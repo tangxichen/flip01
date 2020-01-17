@@ -1,0 +1,62 @@
+\documentclass{amsart}
+\synctex=1
+
+%=================================================================
+%
+\newcount\DraftStatus  % 0 suppresses notes to selves in text
+\DraftStatus=1   % TODO: set to 0 for final version
+%=================================================================
+
+%=================================================================
+\usepackage{comment}
+%=================================================================
+%
+\includecomment{JournalOnly}
+\includecomment{ConferenceOnly}
+\includecomment{TulipStyle}
+%
+%=================================================================
+\input{preamble}
+
+
+%=================================================================
+%
+\begin{document}
+%
+%=================================================================
+%
+\title[Kaggle subject]{Identifying Customers}%
+
+\author{Xichen Tang}
+\address[A.~1]{QUT,\\
+QUT, Xichen Tang 710065, China}%
+\email[A.~1]{xichen@tulip.academy}
+
+%\thanks{Thanks to \ldots}%
+\subjclass{Artificial Intelligence}%
+\keywords{Machine Learning, Data Mining, ...}%
+\date{\today}%
+
+\begin{abstract}
+\par
+In this challenge, we asked to  identify which customers will make a specific transaction in the future, irrespective of the amount of money transacted. The data provided for this competition has the same structure as the real data we have available to solve this problem.
+\end{abstract}
+
+\maketitle
+\tableofcontents
+
+\newpage
+%=================================================================
+
+\input{mainbody}
+
+% ----------------------------------------------------------------
+\newpage
+\bibliography{tuliplab,yourbib}
+\bibliographystyle{plain}
+%=================================================================
+
+\listoftodos
+
+\end{document}
+
